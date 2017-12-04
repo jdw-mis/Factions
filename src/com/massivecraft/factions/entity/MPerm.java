@@ -378,7 +378,7 @@ public class MPerm extends Entity<MPerm> implements Prioritized, Registerable, N
 		
 		if (this.isTerritory())
 		{
-			AccessStatus accessStatus = ta.getTerritoryAccess(mplayer);
+			AccessStatus accessStatus = ta.getTerritoryAccess(mplayer, ps);
 			if (accessStatus != AccessStatus.STANDARD)
 			{
 				if (verboose && accessStatus == AccessStatus.DECREASED)

@@ -1,6 +1,7 @@
 package com.massivecraft.factions.engine;
 
 import com.massivecraft.factions.AccessStatus;
+import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.TerritoryAccess;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
@@ -36,31 +37,37 @@ public class EngineMoveChunk extends Engine
 	public void moveChunkDetect(PlayerMoveEvent event)
 	{
 		// If the player is moving from one chunk to another ...
-		if (MUtil.isSameChunk(event)) return;
+		if (MUtil.isSameChunk(event)&&isSameHeight(event.getFrom().getBlockY(),event.getTo().getBlockY())) return;
 		Player player = event.getPlayer();
 		if (MUtil.isntPlayer(player)) return;
 
 		// ... gather info on the player and the move ...
 		MPlayer mplayer = MPlayer.get(player);
 
-		PS chunkFrom = PS.valueOf(event.getFrom()).getChunk(true);
-		PS chunkTo = PS.valueOf(event.getTo()).getChunk(true);
+		PS chunkFrom = PS.valueOf(event.getFrom());
+		PS chunkTo = PS.valueOf(event.getTo());
 
 		// ... send info onwards and try auto-claiming.
-		sendChunkInfo(mplayer, player, chunkFrom, chunkTo);
-		tryAutoClaim(mplayer, chunkTo);
+		if(MUtil.isSameChunk(event))
+		{
+			sendAutoMapUpdate(mplayer, player);
+			tryAutoClaim(mplayer, chunkTo);
+		}
+		sendFactionTerritoryInfo(mplayer, player, chunkFrom, chunkTo);
+		sendTerritoryAccessMessage(mplayer, chunkFrom, chunkTo);
+	}
+	
+	//240/16
+	private boolean isSameHeight(int yF, int yT)
+	{
+		if(!(yF >= 240 ^ yT >= 240)&&!(yF <= 16 ^ yT <= 16))
+			return true;
+		return false;
 	}
 
 	// -------------------------------------------- //
 	// MOVE CHUNK: SEND CHUNK INFO
 	// -------------------------------------------- //
-
-	private static void sendChunkInfo(MPlayer mplayer, Player player, PS chunkFrom, PS chunkTo)
-	{
-		sendAutoMapUpdate(mplayer, player);
-		sendFactionTerritoryInfo(mplayer, player, chunkFrom, chunkTo);
-		sendTerritoryAccessMessage(mplayer, chunkFrom, chunkTo);
-	}
 	
 	private static void sendAutoMapUpdate(MPlayer mplayer, Player player)
 	{
@@ -73,6 +80,11 @@ public class EngineMoveChunk extends Engine
 	{
 		Faction factionFrom = BoardColl.get().getFactionAt(chunkFrom);
 		Faction factionTo = BoardColl.get().getFactionAt(chunkTo);
+		
+		if(chunkFrom.getBlockY(true) >= 240 || chunkFrom.getBlockY(true) <= 16)
+			factionFrom = Faction.get( Factions.ID_NONE );
+		if(chunkTo.getBlockY(true) >= 240 || chunkTo.getBlockY(true) <= 16)
+			factionTo = Faction.get( Factions.ID_NONE );
 		
 		if (factionFrom == factionTo) return;
 		
@@ -112,8 +124,8 @@ public class EngineMoveChunk extends Engine
 		TerritoryAccess accessTo = BoardColl.get().getTerritoryAccessAt(chunkTo);
 		
 		// See if the status has changed
-		AccessStatus statusFrom = accessFrom.getTerritoryAccess(mplayer);
-		AccessStatus statusTo = accessTo.getTerritoryAccess(mplayer);
+		AccessStatus statusFrom = accessFrom.getTerritoryAccess(mplayer, chunkFrom);
+		AccessStatus statusTo = accessTo.getTerritoryAccess(mplayer, chunkTo);
 		if (statusFrom == statusTo) return;
 		
 		// Inform

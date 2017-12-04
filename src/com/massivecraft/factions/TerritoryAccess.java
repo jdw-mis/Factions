@@ -3,6 +3,7 @@ package com.massivecraft.factions;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.collections.MassiveSet;
+import com.massivecraft.massivecore.ps.PS;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -200,22 +201,23 @@ public class TerritoryAccess
 	// ACCESS STATUS
 	// -------------------------------------------- //
 	
-	public AccessStatus getTerritoryAccess(MPlayer mplayer)
+	public AccessStatus getTerritoryAccess(MPlayer mplayer, PS ps)
 	{
+		
 		if (this.isMPlayerGranted(mplayer)) return AccessStatus.ELEVATED;
 		
 		String factionId = mplayer.getFaction().getId();
 		if (this.getFactionIds().contains(factionId)) return AccessStatus.ELEVATED;
 		
-		if (this.getHostFactionId().equals(factionId) && !this.isHostFactionAllowed()) return AccessStatus.DECREASED;
+		if (this.getHostFactionId().equals(factionId) && !this.isHostFactionAllowed() && ps.getBlockY(true) < 240 && ps.getBlockY(true) > 16) return AccessStatus.DECREASED;
 		
 		return AccessStatus.STANDARD;
 	}
 	
 	@Deprecated
-	public Boolean hasTerritoryAccess(MPlayer mplayer)
+	public Boolean hasTerritoryAccess(MPlayer mplayer, PS ps)
 	{
-		return this.getTerritoryAccess(mplayer).hasAccess();
+		return this.getTerritoryAccess(mplayer, ps).hasAccess();
 	}
 	
 }
