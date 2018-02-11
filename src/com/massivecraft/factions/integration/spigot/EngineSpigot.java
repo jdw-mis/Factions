@@ -9,6 +9,7 @@ import com.massivecraft.massivecore.Engine;
 import com.massivecraft.massivecore.ps.PS;
 import com.massivecraft.massivecore.util.MUtil;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -68,56 +69,78 @@ public class EngineSpigot extends Engine
 	public void blockBuild(BlockPistonExtendEvent event)
 	{
 		// Is checking deactivated by MConf?
-		if ( ! MConf.get().handlePistonProtectionThroughDenyBuild) return;
+		//if ( ! MConf.get().handlePistonProtectionThroughDenyBuild) return;
 		
+		int pistony = event.getBlock().getY();
 		Faction pistonFaction = BoardColl.get().getFactionAt(PS.valueOf(event.getBlock()));
 		
 		List<Block> blocks = event.getBlocks();
+		BlockFace direction = event.getDirection();
 		
 		// Check for all extended blocks
-		for (Block block : blocks)
-		{
-			// Block which is being pushed into
-			Block targetBlock = block.getRelative(event.getDirection());
-			
-			// Members of a faction might not have build rights in their own territory, but pistons should still work regardless
-			Faction targetFaction = BoardColl.get().getFactionAt(PS.valueOf(targetBlock));
-			if (targetFaction == pistonFaction) continue;
-			
-			// Perm check
-			if (MPerm.getPermBuild().has(pistonFaction, targetFaction)) continue;
-			
-			event.setCancelled(true);
-			return;
-		}	
+		if(pistony < 240 && pistony > 16) //normal check
+			for (Block block : blocks)
+			{
+				// Block which is being pushed into
+				Block targetBlock = block.getRelative(direction);
+				// Members of a faction might not have build rights in their own territory, but pistons should still work regardless
+				Faction targetFaction = BoardColl.get().getFactionAt(PS.valueOf(targetBlock));
+				if (targetFaction == pistonFaction) continue;
+				
+				// Perm check
+				if (MPerm.getPermBuild().has(pistonFaction, targetFaction)) continue;
+				
+				event.setCancelled(true);
+				return;
+			}
+		else	// 240/16 check
+			for (Block block : blocks)
+			{
+				Block targetBlock = block.getRelative(direction);
+				Faction targetFaction = BoardColl.get().getFactionAt(PS.valueOf(targetBlock));
+				if(targetFaction == null || targetBlock.getY() >= 240 || targetBlock.getY() <= 16) continue;
+				event.setCancelled(true);
+				return;
+			}
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void blockBuild(BlockPistonRetractEvent event)
 	{	
 		// Is checking deactivated by MConf?
-		if ( ! MConf.get().handlePistonProtectionThroughDenyBuild) return;
-		
+		//if ( ! MConf.get().handlePistonProtectionThroughDenyBuild) return;
+
+		int pistony = event.getBlock().getY();
 		Faction pistonFaction = BoardColl.get().getFactionAt(PS.valueOf(event.getBlock()));
 		
 		List<Block> blocks = event.getBlocks();
 		
 		// Check for all retracted blocks
-		for (Block block : blocks)
-		{
-			// Is the retracted block air/water/lava? Don't worry about it
-			if (block.isEmpty() || block.isLiquid()) return;
+		if(pistony < 240 && pistony > 16) //normal check
+			for (Block block : blocks)
+			{
+				// Is the retracted block air/water/lava? Don't worry about it
+				if (block.isEmpty() || block.isLiquid()) continue;
+				
+				// Members of a faction might not have build rights in their own territory, but pistons should still work regardless
+				Faction targetFaction = BoardColl.get().getFactionAt(PS.valueOf(block));
+				if (targetFaction == pistonFaction) continue;
+				
+				// Perm check
+				if (MPerm.getPermBuild().has(pistonFaction, targetFaction)) continue;
 			
-			// Members of a faction might not have build rights in their own territory, but pistons should still work regardless
-			Faction targetFaction = BoardColl.get().getFactionAt(PS.valueOf(block));
-			if (targetFaction == pistonFaction) continue;
-
-			// Perm check
-			if (MPerm.getPermBuild().has(pistonFaction, targetFaction)) continue;
-			
-			event.setCancelled(true);
-			return;
-		}
+				event.setCancelled(true);
+				return;
+			}
+		else	// 240/16 check
+			for (Block block : blocks)
+			{
+				if (block.isEmpty() || block.isLiquid()) continue;
+				Faction targetFaction = BoardColl.get().getFactionAt(PS.valueOf(block));
+				if(targetFaction == null || block.getY() >= 240 || block.getY() <= 16) continue;
+				event.setCancelled(true);
+				return;
+			}
 	}
 	
 }
