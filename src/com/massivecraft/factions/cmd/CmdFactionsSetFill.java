@@ -4,12 +4,12 @@ import com.massivecraft.factions.Perm;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MConf;
+import com.massivecraft.massivecore.collections.MassiveSet;
 import com.massivecraft.massivecore.command.requirement.RequirementHasPerm;
 import com.massivecraft.massivecore.command.requirement.RequirementIsPlayer;
 import com.massivecraft.massivecore.ps.PS;
 import com.massivecraft.massivecore.util.MUtil;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 
@@ -46,7 +46,7 @@ public class CmdFactionsSetFill extends CmdFactionsSetXSimple
 	{
 		// Common Startup
 		final PS chunk = PS.valueOf(me.getLocation()).getChunk(true);
-		final Set<PS> chunks = new LinkedHashSet<>();
+		final Set<PS> chunks = new MassiveSet<>();
 		
 		// What faction (aka color) resides there?
 		// NOTE: Wilderness/None is valid. 
@@ -81,7 +81,7 @@ public class CmdFactionsSetFill extends CmdFactionsSetXSimple
 		if (color == null) throw new NullPointerException("color");
 		
 		// Expand
-		Set<PS> expansion = new LinkedHashSet<>();
+		Set<PS> expansion = new MassiveSet<>();
 		for (PS chunk : set)
 		{
 			Set<PS> neighbours = MUtil.set(

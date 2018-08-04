@@ -9,8 +9,6 @@ import com.massivecraft.massivecore.util.MUtil;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -338,7 +336,7 @@ public class BoardColl extends Coll<Board> implements BoardInterface
 		psChunk = psChunk.getChunk(true);
 		
 		// Create
-		Set<PS> ret = new LinkedHashSet<>();
+		Set<PS> ret = new MassiveSet<>();
 		if (distance < 0) return ret;
 		
 		// Fill
@@ -369,7 +367,7 @@ public class BoardColl extends Coll<Board> implements BoardInterface
 		if (chunks == null) throw new NullPointerException("chunks");
 		
 		// Create
-		Set<PS> ret = new LinkedHashSet<>();
+		Set<PS> ret = new MassiveSet<>();
 		
 		if (distance < 0) return ret;
 		
@@ -389,7 +387,7 @@ public class BoardColl extends Coll<Board> implements BoardInterface
 		if (chunks == null) throw new NullPointerException("chunks");
 		
 		// Create
-		Set<Faction> ret = new LinkedHashSet<>();
+		Set<Faction> ret = new MassiveSet<>();
 		
 		// Fill
 		for (PS chunk : chunks)
@@ -406,7 +404,7 @@ public class BoardColl extends Coll<Board> implements BoardInterface
 	public static Map<PS, Faction> getChunkFaction(Collection<PS> chunks)
 	{
 		// Create
-		Map<PS, Faction> ret = new LinkedHashMap<>();
+		Map<PS, Faction> ret = new MassiveMap<>();
 		
 		// Fill
 		Faction none = FactionColl.get().getNone();
