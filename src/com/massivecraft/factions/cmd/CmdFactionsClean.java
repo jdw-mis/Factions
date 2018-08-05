@@ -29,7 +29,6 @@ public class CmdFactionsClean extends FactionsCommand
 	public void perform() throws MassiveException
 	{
 		Object message;
-		int count;
 		
 		// Title
 		message = Txt.titleize("Factions Cleaner Results");

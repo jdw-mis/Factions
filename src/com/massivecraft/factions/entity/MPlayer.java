@@ -17,8 +17,6 @@ import com.massivecraft.massivecore.mixin.MixinSenderPs;
 import com.massivecraft.massivecore.mixin.MixinTitle;
 import com.massivecraft.massivecore.ps.PS;
 import com.massivecraft.massivecore.ps.PSFormatHumanSpace;
-import com.massivecraft.massivecore.store.Coll;
-import com.massivecraft.massivecore.store.Modification;
 import com.massivecraft.massivecore.store.SenderEntity;
 import com.massivecraft.massivecore.util.IdUtil;
 import com.massivecraft.massivecore.util.MUtil;
@@ -32,7 +30,6 @@ import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
