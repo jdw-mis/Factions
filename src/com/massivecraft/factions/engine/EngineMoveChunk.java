@@ -60,9 +60,9 @@ public class EngineMoveChunk extends Engine
 	//240/16
 	private boolean isSameHeight(int yF, int yT)
 	{
-		if(!(yF >= 240 ^ yT >= 240)&&!(yF <= 16 ^ yT <= 16))
-			return true;
-		return false;
+		int limUpper = MConf.get().limitUpper24016;
+		int limLower = MConf.get().limitLower24016;
+		return!(yF >= limUpper ^ yT >= limUpper)&&!(yF <= limLower ^ yT <= limLower);
 	}
 
 	// -------------------------------------------- //
@@ -80,10 +80,13 @@ public class EngineMoveChunk extends Engine
 	{
 		Faction factionFrom = BoardColl.get().getFactionAt(chunkFrom);
 		Faction factionTo = BoardColl.get().getFactionAt(chunkTo);
+
+		int limUpper = MConf.get().limitUpper24016;
+		int limLower = MConf.get().limitLower24016;
 		
-		if(chunkFrom.getBlockY(true) >= 240 || chunkFrom.getBlockY(true) <= 16)
+		if(chunkFrom.getBlockY(true) >= limUpper || chunkFrom.getBlockY(true) <= limLower)
 			factionFrom = Faction.get( Factions.ID_NONE );
-		if(chunkTo.getBlockY(true) >= 240 || chunkTo.getBlockY(true) <= 16)
+		if(chunkTo.getBlockY(true) >= limUpper || chunkTo.getBlockY(true) <= limLower)
 			factionTo = Faction.get( Factions.ID_NONE );
 		
 		if (factionFrom == factionTo) return;

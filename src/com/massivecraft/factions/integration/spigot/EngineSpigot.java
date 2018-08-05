@@ -68,17 +68,20 @@ public class EngineSpigot extends Engine
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void blockBuild(BlockPistonExtendEvent event)
 	{
-		// Is checking deactivated by MConf?
-		//if ( ! MConf.get().handlePistonProtectionThroughDenyBuild) return;
-		
 		int pistony = event.getBlock().getY();
-		Faction pistonFaction = BoardColl.get().getFactionAt(PS.valueOf(event.getBlock()));
-		
-		List<Block> blocks = event.getBlocks();
-		BlockFace direction = event.getDirection();
+		int limUpper = MConf.get().limitUpper24016;
+		int limLower = MConf.get().limitLower24016;
 		
 		// Check for all extended blocks
-		if(pistony < 240 && pistony > 16) //normal check
+		if(pistony < limUpper && pistony > limLower) //normal check
+		{
+			// Is checking deactivated by MConf?
+			if ( ! MConf.get().handlePistonProtectionThroughDenyBuild) return;
+
+			Faction pistonFaction = BoardColl.get().getFactionAt(PS.valueOf(event.getBlock()));
+			List<Block> blocks = event.getBlocks();
+			BlockFace direction = event.getDirection();
+			
 			for (Block block : blocks)
 			{
 				// Block which is being pushed into
@@ -93,30 +96,42 @@ public class EngineSpigot extends Engine
 				event.setCancelled(true);
 				return;
 			}
+		}	
 		else	// 240/16 check
+		{
+			// Is checking deactivated by MConf?
+			if ( ! MConf.get().handlePistonProtection24016) return;
+			
+			List<Block> blocks = event.getBlocks();
+			BlockFace direction = event.getDirection();
+			
 			for (Block block : blocks)
 			{
 				Block targetBlock = block.getRelative(direction);
 				Faction targetFaction = BoardColl.get().getFactionAt(PS.valueOf(targetBlock));
-				if(targetFaction == null || targetBlock.getY() >= 240 || targetBlock.getY() <= 16) continue;
+				if(targetFaction == null || targetBlock.getY() >= limUpper || targetBlock.getY() <= limLower) continue;
 				event.setCancelled(true);
 				return;
 			}
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void blockBuild(BlockPistonRetractEvent event)
 	{	
-		// Is checking deactivated by MConf?
-		//if ( ! MConf.get().handlePistonProtectionThroughDenyBuild) return;
-
 		int pistony = event.getBlock().getY();
-		Faction pistonFaction = BoardColl.get().getFactionAt(PS.valueOf(event.getBlock()));
-		
-		List<Block> blocks = event.getBlocks();
+		int limUpper = MConf.get().limitUpper24016;
+		int limLower = MConf.get().limitLower24016;
 		
 		// Check for all retracted blocks
-		if(pistony < 240 && pistony > 16) //normal check
+		if(pistony < limUpper && pistony > limLower) //normal check
+		{
+			// Is checking deactivated by MConf?
+			if ( ! MConf.get().handlePistonProtectionThroughDenyBuild) return;
+
+			Faction pistonFaction = BoardColl.get().getFactionAt(PS.valueOf(event.getBlock()));
+			List<Block> blocks = event.getBlocks();
+			
 			for (Block block : blocks)
 			{
 				// Is the retracted block air/water/lava? Don't worry about it
@@ -132,15 +147,23 @@ public class EngineSpigot extends Engine
 				event.setCancelled(true);
 				return;
 			}
+		}
 		else	// 240/16 check
+		{
+			// Is checking deactivated by MConf?
+			if ( ! MConf.get().handlePistonProtection24016) return;
+			
+			List<Block> blocks = event.getBlocks();
+			
 			for (Block block : blocks)
 			{
 				if (block.isEmpty() || block.isLiquid()) continue;
 				Faction targetFaction = BoardColl.get().getFactionAt(PS.valueOf(block));
-				if(targetFaction == null || block.getY() >= 240 || block.getY() <= 16) continue;
+				if(targetFaction == null || block.getY() >= limUpper || block.getY() <= limLower) continue;
 				event.setCancelled(true);
 				return;
 			}
+		}
 	}
 	
 }

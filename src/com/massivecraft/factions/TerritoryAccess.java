@@ -1,6 +1,7 @@
 package com.massivecraft.factions;
 
 import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.factions.entity.MConf;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.collections.MassiveSet;
 import com.massivecraft.massivecore.ps.PS;
@@ -209,7 +210,7 @@ public class TerritoryAccess
 		String factionId = mplayer.getFaction().getId();
 		if (this.getFactionIds().contains(factionId)) return AccessStatus.ELEVATED;
 		
-		if (this.getHostFactionId().equals(factionId) && !this.isHostFactionAllowed() && ps.getBlockY(true) < 240 && ps.getBlockY(true) > 16) return AccessStatus.DECREASED;
+		if (this.getHostFactionId().equals(factionId) && !this.isHostFactionAllowed() && ps.getBlockY(true) < MConf.get().limitUpper24016 && ps.getBlockY(true) > MConf.get().limitLower24016) return AccessStatus.DECREASED;
 		
 		return AccessStatus.STANDARD;
 	}

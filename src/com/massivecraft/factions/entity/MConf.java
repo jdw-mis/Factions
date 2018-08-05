@@ -328,6 +328,21 @@ public class MConf extends Entity<MConf>
 	// through the denying of MPerm build
 	public boolean handlePistonProtectionThroughDenyBuild = true;
 	
+	// Feature that trunicates faction claims at specified heights
+	// eg: Wilderness above and below certain heights
+	public boolean enable24016 = true;
+	
+	// Upper limit of faction claims in 24016, inclusive
+	// Set to 256 to disable specifically
+	public int limitUpper24016 = 240;
+	
+	// Lower limit of faction claims in 24016, inclusive
+	// Set to 0 to disable specifically
+	public int limitLower24016 = 16;
+
+	// Prevents piston travel through 240/16 barrier
+	public boolean handlePistonProtection24016 = true;
+	
 	// -------------------------------------------- //
 	// DENY COMMANDS
 	// -------------------------------------------- //
